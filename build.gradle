@@ -30,7 +30,7 @@ def protocVersion = '3.5.1-1'
 group 'nl.toefel'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 11
+sourceCompatibility = 8
 
 dependencies {
     compile "com.google.api.grpc:proto-google-common-protos:1.0.0"

@@ -16,80 +16,104 @@ option java_package = "nl.toefel.reservations.v1";
 // required to add annotations to the rpc calls
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
 
 service ReservationService {
 
-    rpc CreateReservation(CreateReservationRequest) returns (Reservation) {
-        option(google.api.http) = {
-            post: "/v1/reservations"
-            body: "reservation"
-        };
-    }
+  rpc CreateReservation(CreateReservationRequest) returns (Reservation) {
+    option(google.api.http) = {
+      post: "/v1/reservations"
+      body: "reservation"
+    };
+  }
 
-    rpc GetReservation(GetReservationRequest) returns (Reservation) {
-        // {id} is mapped into the GetReservationRequest.id field!
-        option (google.api.http) = {
-            get: "/v1/reservations/{id}"
-        };
-    }
+  rpc GetReservation(GetReservationRequest) returns (Reservation) {
+    // {id} is mapped into the GetReservationRequest.id field!
+    option (google.api.http) = {
+      get: "/v1/reservations/{id}"
+    };
+  }
 
-    // lists all the reservations, use query params on venue or timestamp to filter the resultset.
-    rpc ListReservations(ListReservationsRequest) returns (stream Reservation) {
-        // use query parameter to specify filters, example: ?venue=UtrechtHomeoffice
-        // these query parameters will be automatically mapped to the ListReservationRequest object
-        option (google.api.http) = {
-            get: "/v1/reservations"
-        };
-    }
+  // lists all the reservations, use query params on venue or timestamp to filter the resultset.
+  rpc ListReservations(ListReservationsRequest) returns (stream Reservation) {
+    // use query parameter to specify filters, example: ?venue=UtrechtHomeoffice
+    // these query parameters will be automatically mapped to the ListReservationRequest object
+    option (google.api.http) = {
+      get: "/v1/reservations"
+    };
+  }
 
-    rpc DeleteReservation(DeleteReservationRequest) returns (google.protobuf.Empty) {
-        // {id} is mapped into the DeleteReservationRequest.id field!
-        option (google.api.http) = {
-            delete: "/v1/reservations/{id}"
-        };
-    }
+  rpc DeleteReservation(DeleteReservationRequest) returns (google.protobuf.Empty) {
+    // {id} is mapped into the DeleteReservationRequest.id field!
+    option (google.api.http) = {
+      delete: "/v1/reservations/{id}"
+    };
+  }
 
+
+  rpc UpdateReservation(UpdateReservationRequest) returns (Reservation) {
+    option (google.api.http) = {
+      patch: "/v1/reservations/{id}"
+      body: "*"
+    };
+  }
 }
 
 message Reservation {
-    string id = 1;
-    string title = 2;
-    string venue = 3;
-    string room = 4;
-    string timestamp = 5;
-    repeated Person attendees = 6;
+  string id = 1;
+  string title = 2;
+  string venue = 3;
+  Room room = 4;
+  string timestamp = 5;
+  repeated Person attendees = 6;
 }
 
 message Person {
-    string ssn = 1;
-    string firstName = 2;
-    string lastName = 3;
+  string ssn = 1;
+  string firstName = 2;
+  string lastName = 3;
+}
+
+message Room {
+  string name = 1;
+  string number = 2;
+  Desk desk = 3;
+}
+
+message Desk {
+  string brand = 1;
 }
 
 message CreateReservationRequest {
-    Reservation reservation = 2;
+  Reservation reservation = 2;
 }
 
 message CreateReservationResponse {
-    Reservation reservation = 1;
+  Reservation reservation = 1;
 }
 
 message GetReservationRequest {
-    string id = 1;
+  string id = 1;
 }
 
 message ListReservationsRequest {
-    string venue = 1;
-    string timestamp = 2;
-    string room = 3;
+  string venue = 1;
+  string timestamp = 2;
+  string room = 3;
 
-    Attendees attendees = 4;
+  Attendees attendees = 4;
 
-    message Attendees {
-        repeated string lastName = 1;
-    }
+  message Attendees {
+    repeated string lastName = 1;
+  }
 }
 
 message DeleteReservationRequest {
-    string id = 1;
+  string id = 1;
+}
+
+message UpdateReservationRequest {
+  string id = 1;
+  Reservation reservation = 2;
+  google.protobuf.FieldMask field_mask = 3;
 }
