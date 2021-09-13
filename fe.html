@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<a onclick="callService()">No auth</a>
+
+<a onclick="withAuth()">With auth</a>
+
+<script type="application/javascript">
+    const id = "21359c7d-285b-4658-876e-07e506af424a"
+
+    async function callService() {
+        console.log(await (await fetch("http://blablah.lvh.me:51051/v1/reservations/" + id)).json())
+    }
+
+    async function withAuth() {
+        console.log(await (await fetch("http://blablah.lvh.me:51051/v1/reservations/" + id, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer blah"
+            }
+        })).json())
+    }
+</script>
+</body>
+</html>
